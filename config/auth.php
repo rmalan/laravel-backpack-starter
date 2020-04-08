@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'backpack',
         'passwords' => 'users',
     ],
 
@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'backpack' => [
+            "driver" => "session",
+            "provider" => "backpack"
+        ],
+
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
