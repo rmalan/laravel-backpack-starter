@@ -1,79 +1,132 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# Laravel Backpack Starter
+Starter template menggunakan [Backpack for Laravel](https://backpackforlaravel.com/). Template ini dibuat karena ada beberapa `error` yang tak bisa saya ketemukan solusinya dan beberapa bagian yang harus saya edit tapi tidak tau bagaimana caranya selain melalui `vendor`. :(
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## Fitur
+- Laravel 7
+- Backpack for Laravel
+- Laravel-Backpack/PermissionManager
+- *Login/Register* menggunakan *username*
 
-## About Laravel
+## *Requirements*
+- PHP >= 7.2.5
+- Git
+- Composer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Instalasi
+- Klon repo:
+```
+$ git clone https://github.com/rmalan/laravel-backpack-stater.git
+```
+Jalankan:
+```
+$ composer install
+```
+*Setup* file `.env`. Kemudian jalankan:
+```
+$ php artisan key:generate
+$ php artisan migrate
+```
+- Buka `vendor/backpack/crud/src/resources/lang/id/crud.php`, kemudian perbaharui bagian berikut menjadi:
+```php
+// DataTables translation
+'emptyTable'     => 'Tak ada data yang tersedia pada tabel ini',
+'info'           => 'Menampilkan _END_ dari _TOTAL_ data',
+'infoEmpty'      => '',
+'infoFiltered'   => '(difilter dari _MAX_ data)',
+'infoPostFix'    => '',
+'thousands'      => ',',
+'lengthMenu'     => '_MENU_ data per halaman',
+'loadingRecords' => 'Memuat...',
+'processing'     => 'Memproses...',
+'search'         => 'Cari: ',
+'zeroRecords'    => 'Tidak ada data yang cocok ditemukan',
+```
+- Buka `vendor/backpack/crud/src/app/Http/Controllers/Auth/RegisterController.php`, kemudian perbaharui bagian berikut menjadi:
+```php
+return Validator::make($data, [
+    'name'                             => 'required|max:255',
+    backpack_authentication_column()   => 'required|'.$email_validation.'max:20|unique:'.$users_table,
+    'email'                            => 'required|max:255|unique:'.$users_table,
+    'password'                         => 'required|min:6|confirmed',
+]);
+```
+```php
+return $user->create([
+    'name'                             => $data['name'],
+    backpack_authentication_column()   => $data[backpack_authentication_column()],
+    'email'                            => $data['email'],
+    'password'                         => bcrypt($data['password']),
+]);
+```
+- Buka `vendor/backpack/crud/src/resources/views/base/auth/register.blade.php`, dan tambahkan bagian berikut:
+```html
+<div class="form-group">
+    <label class="control-label" for="email">Email</label>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    <div>
+        <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" id="email" value="{{ old('email') }}">
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+        @if ($errors->has('email'))
+            <span class="invalid-feedback">
+                <strong>{{ $errors->first('email') }}</strong>
+            </span>
+        @endif
+    </div>
+</div>
+```
+- Buka `vendor/backpack/crud/src/app/Http/Controllers/MyAccountController.php`, kemudian perbaharui bagian berikut menjadi:
+```html
+<div class="row">
+    <div class="col-md-4 form-group">
+        @php
+            $label = trans('backpack::base.name');
+            $field = 'name';
+        @endphp
+        <label class="required">{{ $label }}</label>
+        <input required class="form-control" type="text" name="{{ $field }}" value="{{ old($field) ? old($field) : $user->$field }}">
+    </div>
 
-## Learning Laravel
+    <div class="col-md-4 form-group">
+        @php
+            $label = config('backpack.base.authentication_column_name');
+            $field = backpack_authentication_column();
+        @endphp
+        <label class="required">{{ $label }}</label>
+        <input required class="form-control" type="{{ backpack_authentication_column()=='email'?'email':'text' }}" name="{{ $field }}" value="{{ old($field) ? old($field) : $user->$field }}">
+    </div>
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    <div class="col-md-4 form-group">
+        <label class="required">Email</label>
+        <input required class="form-control" type="email" name="email" value="{{ old('email') ? old('email') : $user->email }}">
+    </div>
+</div>
+```
+- Buka `vendor/backpack/permissionmanager/src/app/Http/Controllers/UserCrudController.php`, dan tambahkan bagian berikut pada `setupListOperation` dan `addUserFields`:
+```php
+[
+    'name'  => 'name',
+    'label' => 'Nama Pengguna',
+    'type'  => 'text',
+],
+```
+- Buka `vendor/backpack/permissionmanager/src/app/Http/Requests/UserUpdateCrudRequest.php`, kemudian perbaharui bagian berikut menjadi:
+```php
+return [
+    'username' => 'required|unique:'.config('permission.table_names.users', 'users').',username',
+    'email'    => 'required|unique:'.config('permission.table_names.users', 'users').',email',
+    'name'     => 'required',
+    'password' => 'required|confirmed',
+];
+```
+- Buka `vendor/backpack/permissionmanager/src/app/Http/Requests/UserUpdateCrudRequest.php`, kemudian perbaharui bagian berikut:
+```php
+return [
+    'username' => 'required|unique:'.config('permission.table_names.users', 'users').',username,'.$userId,
+    'email'    => 'required|unique:'.config('permission.table_names.users', 'users').',email,'.$userId,
+    'name'     => 'required',
+    'password' => 'confirmed',
+];
+```
+## Dokumentasi
+- [Bakcpack for Laravel](https://backpackforlaravel.com/docs)
+- [Laravel-Backpack/PermissionManager](https://github.com/Laravel-Backpack/PermissionManager)
