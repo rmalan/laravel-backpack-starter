@@ -104,7 +104,7 @@ return $user->create([
 - Buka `vendor/backpack/permissionmanager/src/app/Http/Controllers/UserCrudController.php`, dan tambahkan bagian berikut pada `setupListOperation` dan `addUserFields`:
 ```php
 [
-    'name'  => 'name',
+    'name'  => 'username',
     'label' => 'Nama Pengguna',
     'type'  => 'text',
 ],
