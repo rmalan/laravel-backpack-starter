@@ -17,11 +17,11 @@ Starter template menggunakan [Backpack for Laravel](https://backpackforlaravel.c
 ```
 $ git clone https://github.com/rmalan/laravel-backpack-stater.git
 ```
-Jalankan:
+- Jalankan:
 ```
 $ composer install
 ```
-*Setup* file `.env`. Kemudian jalankan:
+- *Setup* file `.env`. Kemudian jalankan:
 ```
 $ php artisan key:generate
 $ php artisan migrate
