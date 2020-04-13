@@ -74,7 +74,7 @@ return $user->create([
     </div>
 </div>
 ```
-- Buka `vendor/backpack/crud/src/app/Http/Controllers/MyAccountController.php`, kemudian perbaharui bagian berikut menjadi:
+- Buka `vendor\backpack\crud\src\resources\views\base\my_account.blade.php`, kemudian perbaharui bagian berikut menjadi:
 ```html
 <div class="row">
     <div class="col-md-4 form-group">
@@ -109,7 +109,7 @@ return $user->create([
     'type'  => 'text',
 ],
 ```
-- Buka `vendor/backpack/permissionmanager/src/app/Http/Requests/UserUpdateCrudRequest.php`, kemudian perbaharui bagian berikut menjadi:
+- Buka `vendor\backpack\permissionmanager\src\app\Http\Requests\UserStoreCrudRequest.php`, kemudian perbaharui bagian berikut menjadi:
 ```php
 return [
     'username' => 'required|unique:'.config('permission.table_names.users', 'users').',username',
