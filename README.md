@@ -127,18 +127,6 @@ return [
     'password' => 'confirmed',
 ];
 ```
-- Jalankan:
-```
-$ php artisan serve
-```
-- Daftar akun, buat *role* `administrator`, kemudian tambahkan *role* `administrator` ke akun yang telah dibuat.
-- Untuk membatasi akses ke *Authentication* tambahakn kode berikut pada `function setup()` dimasing-masing Controller yang ada di`/var/www/html/backpack/vendor/backpack/permissionmanager/src/app/Http/Controllers`:
-```php
-if (!backpack_user()->hasRole('administrator')) {
-    $this->crud->denyAccess(['list', 'show', 'create', 'update', 'delete']);
-}
-```
 ## Dokumentasi
-- [Laravel](https://laravel.com/docs)
 - [Bakcpack for Laravel](https://backpackforlaravel.com/docs)
 - [Laravel-Backpack/PermissionManager](https://github.com/Laravel-Backpack/PermissionManager)
