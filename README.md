@@ -47,7 +47,7 @@ return Validator::make($data, [
     'name'                             => 'required|max:255',
     backpack_authentication_column()   => 'required|'.$email_validation.'max:20|unique:'.$users_table,
     'email'                            => 'required|max:255|unique:'.$users_table,
-    'password'                         => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X]).*$/|confirmed',
+    'password'                         => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X]).*$/|confirmed',
 ]);
 ```
 ```php
@@ -58,7 +58,7 @@ return $user->create([
     'password'                         => bcrypt($data['password']),
 ]);
 ```
-- Buka `vendor/backpack/crud/src/resources/views/base/auth/register.blade.php`, dan tambahkan bagian berikut:
+- Buka `vendor/backpack/crud/src/resources/views/base/auth/register.blade.php`, tambahkan bagian berikut:
 ```html
 <div class="form-group">
     <label class="control-label" for="email">Email</label>
@@ -73,6 +73,32 @@ return $user->create([
         @endif
     </div>
 </div>
+```
+- Dan perbaharui bagian berikut menjadi:
+```html
+<div class="form-group">
+    <label class="control-label" for="password">{{ trans('backpack::base.password') }}</label>
+
+    <div>
+        <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" id="password">
+
+        @if ($errors->has('password'))
+            <span class="invalid-feedback">
+                <strong>{{ $errors->first('password') }}</strong>
+            </span>
+        @endif
+
+        <div class="text-muted"><small>Kata sandi harus minimal 8 karakter, mengandung huruf kapital, huruf kecil, dan angka</small></div>
+    </div>
+</div>
+```
+- Buka `vendor/backpack/crud/src/app/Http/Requests/ChangePasswordRequest.php`, dan perbaharui bagian berikut menjadi:
+```php
+return [
+    'old_password'     => 'required',
+    'new_password'     => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X]).*$/',
+    'confirm_password' => 'required|same:new_password|min:8|regex:/^.*(?=.{3,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X]).*$/',
+];
 ```
 - Buka `vendor\backpack\crud\src\resources\views\base\my_account.blade.php`, kemudian perbaharui bagian berikut menjadi:
 ```html
@@ -99,6 +125,18 @@ return $user->create([
         <label class="required">Email</label>
         <input required class="form-control" type="email" name="email" value="{{ old('email') ? old('email') : $user->email }}">
     </div>
+</div>
+```
+- Dan tambahkan bagian berikut:
+```html
+<div class="text-muted">
+    <small>
+        Kata sandi baru harus:
+        * Minimal 8 karakter<br>
+        * Mengandung huruf kapital<br>
+        * Mengandung huruf kecil<br>
+        * Mengandung angka<br>
+    </small>
 </div>
 ```
 - Buka `vendor/backpack/permissionmanager/src/app/Http/Controllers/UserCrudController.php`, dan tambahkan bagian berikut pada `setupListOperation` dan `addUserFields`:
